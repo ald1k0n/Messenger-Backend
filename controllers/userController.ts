@@ -10,12 +10,13 @@ export const createUser = async (req: Request, res: Response) => {
   try {
     const user = await db.user.create({
       data: {
-        username: username,
+        username,
         password: bcrypt.hashSync(password, 8),
       },
     });
     res.status(201).json(user);
   } catch (error) {
+    console.log(error);
     res.status(400).json({
       message: "User with that username already exists",
     });
