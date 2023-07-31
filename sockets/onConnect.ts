@@ -8,15 +8,17 @@ export const onConnect = async (
   socketId: string,
   currentId: any
 ) => {
+  if (!Array.isArray(currentId)) {
+    await db.user.update({
+      where: {
+        id: currentId.userId,
+      },
+      data: {
+        socketId,
+      },
+    });
+  }
   console.log(currentId);
-  await db.user.update({
-    where: {
-      id: currentId.currentUserId,
-    },
-    data: {
-      socketId,
-    },
-  });
 
   socket.broadcast.emit(socketId, "Connected to messenger");
 };

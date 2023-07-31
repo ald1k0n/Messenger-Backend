@@ -1,20 +1,21 @@
-import { PrismaClient, User } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 
 const db = new PrismaClient();
 
 export const connectRoom = async (socket: any, io: any) => {
-  const { roomId } = socket.handshake.query;
+  socket.on("join-room", async (userId?: { userId: number }) => {
+    const chats = await db.userGroup.findMany({
+      where: {
+        userId: userId?.userId!,
+      },
+      select: {
+        groupId: true,
+      },
+    });
 
-  const groupId = await db.group.findUnique({
-    where: {
-      id: roomId,
-    },
+    socket.emit("joined-room", chats);
+    socket.broadcast.emit("joined-room", chats);
   });
-  if (!groupId) {
-    socket.broadcast.emit("Error", "No group with matched id");
-  } else {
-    socket.join(roomId);
-  }
 };
 
 export const createRoom = async (socket: any, io: any) => {
@@ -28,15 +29,29 @@ export const createRoom = async (socket: any, io: any) => {
     if (Array.isArray(users)) {
       const userIds = users.map((user) => user.userId);
 
-      await db.userGroup.createMany({
+      const chat = await db.userGroup.createMany({
         data: userIds.map((userId) => ({
           userId,
           groupId: group.id,
         })),
       });
+
+      console.log(chat, "chat");
+
+      const usersInChat = await db.user.findMany({
+        where: {
+          id: {
+            in: userIds,
+          },
+        },
+      });
+
+      usersInChat.forEach((userId) => {
+        if (userId.socketId) {
+          io.to(userId.socketId).emit("created-room", "room created");
+        }
+      });
     }
-    socket.emit("created-room", "Room has been created");
-    socket.broadcast.emit("created-room", "Room has been created");
   });
 };
 
