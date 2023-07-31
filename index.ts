@@ -26,6 +26,13 @@ app.use("/uploads", express.static("./uploads"));
 app.use("/api/auth", require("./routes/authRoute"));
 app.use("/api/upload", require("./routes/fileUploadTest"));
 
+/*
+  must listen events: 
+    created-room, joined-room
+  to make something: 
+    online - to update a new socketId, create-room - to create room
+*/
+
 io.on("connection", async (socket) => {
   console.log(`Connected to socket with id ${socket.id}`);
   socket.on("online", async (userId: number) => {
