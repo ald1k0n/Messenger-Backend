@@ -10,7 +10,7 @@ export const connectRoom = async (socket: any, io: any) => {
       id: roomId,
     },
   });
-  if (groupId) {
+  if (!groupId) {
     socket.broadcast.emit("Error", "No group with matched id");
   } else {
     socket.join(roomId);
