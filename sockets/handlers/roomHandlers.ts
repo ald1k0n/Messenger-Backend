@@ -3,7 +3,7 @@ import { PrismaClient } from "@prisma/client";
 const db = new PrismaClient();
 
 export const connectRoom = async (socket: any, io: any) => {
-  socket.on("join-room", async (userId?: { userId: number }) => {
+  socket.on("get-rooms", async (userId?: { userId: number }) => {
     const chats = await db.userGroup.findMany({
       where: {
         userId: userId?.userId!,
@@ -15,6 +15,9 @@ export const connectRoom = async (socket: any, io: any) => {
 
     socket.emit("joined-room", chats);
     socket.broadcast.emit("joined-room", chats);
+  });
+  socket.on("join-room", async (room?: { roomId: string }) => {
+    socket.join(room?.roomId);
   });
 };
 

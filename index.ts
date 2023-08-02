@@ -5,6 +5,7 @@ import cors from "cors";
 import { Server } from "socket.io";
 import { onConnect } from "./sockets/onConnect";
 import { connectRoom, createRoom } from "./sockets/handlers/roomHandlers";
+import { sendMessage } from "./sockets/handlers/messageHandler";
 
 config();
 const app = express();
@@ -40,6 +41,7 @@ io.on("connection", async (socket) => {
   });
   await createRoom(socket, io);
   await connectRoom(socket, io);
+  await sendMessage(socket, io);
 });
 
 server.listen(8080, () => {

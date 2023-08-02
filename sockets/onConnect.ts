@@ -8,6 +8,7 @@ export const onConnect = async (
   socketId: string,
   currentId: any
 ) => {
+  console.log(currentId);
   if (!Array.isArray(currentId)) {
     await db.user.update({
       where: {
