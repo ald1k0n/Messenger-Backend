@@ -1,25 +1,22 @@
-import { PrismaClient } from "@prisma/client";
-
-const db = new PrismaClient();
+import { prisma as db } from '../utils/db';
 
 export const onConnect = async (
-  socket: any,
-  io: any,
-  socketId: string,
-  currentId: any
+	socket: any,
+	io: any,
+	socketId: string,
+	currentId: any
 ) => {
-  console.log(currentId);
-  if (!Array.isArray(currentId)) {
-    await db.user.update({
-      where: {
-        id: currentId.userId,
-      },
-      data: {
-        socketId,
-      },
-    });
-  }
-  console.log(currentId);
+	if (!Array.isArray(currentId)) {
+		await db.user.update({
+			where: {
+				id: currentId.userId,
+			},
+			data: {
+				socketId,
+				isOnline: true,
+			},
+		});
+	}
 
-  socket.broadcast.emit(socketId, "Connected to messenger");
+	socket.broadcast.emit(socketId, 'Connected to messenger');
 };

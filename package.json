@@ -17,6 +17,7 @@
   "scripts": {
     "dev": "nodemon index.ts",
     "migrate": "npx prisma migrate dev",
+    "format": "npx prisma format",
     "compile": "npx tsc"
   },
   "devDependencies": {

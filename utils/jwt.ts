@@ -6,13 +6,20 @@ const ACCESS_TOKEN = process.env.ACCESS_TOKEN!;
 
 export const signAccessToken = (payload: any) => {
   return new Promise((resolve, reject) => {
-    jwt.sign({ payload }, ACCESS_TOKEN, (err: any, token: any) => {
-      if (err) {
-        reject();
-      } else {
-        resolve(token);
+    jwt.sign(
+      { payload },
+      ACCESS_TOKEN,
+      {
+        expiresIn: "7d",
+      },
+      (err: any, token: any) => {
+        if (err) {
+          reject();
+        } else {
+          resolve(token);
+        }
       }
-    });
+    );
   });
 };
 
