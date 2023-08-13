@@ -6,9 +6,7 @@ export const connectRoom = async (socket: any, io: any) => {
 			where: {
 				userId: userId?.userId!,
 			},
-			select: {
-				groupId: true,
-			},
+			select: {},
 		});
 
 		socket.emit('joined-room', chats);

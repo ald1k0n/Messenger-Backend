@@ -20,3 +20,19 @@ export const onConnect = async (
 
 	socket.broadcast.emit(socketId, 'Connected to messenger');
 };
+
+export const onDisconnect = async (
+	socket: any,
+	io: any,
+	socketId: string,
+	currentId: any
+) => {
+	await db.user.update({
+		where: {
+			id: currentId.userId,
+		},
+		data: {
+			isOnline: false,
+		},
+	});
+};
